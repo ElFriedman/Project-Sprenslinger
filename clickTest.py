@@ -31,24 +31,12 @@ class MyGame(arcade.Window):
         # So we just see our object, not the pointer.
 
         arcade.set_background_color(arcade.color.ASH_GREY)
+
         self.sprite_list = arcade.SpriteList()
         self.needs_update = False
         self.arrayLength = 16
         self.arrayHeight = 16
-        self.array = [[0 for x in range(self.arrayLength)] for y in range(self.arrayHeight)]
-
-
-        self.array[0][1] = 1
-        self.array[1][1] = 1.1
-        self.array[2][1] = 1.2
-        self.array[3][1] = 1.3
-        self.array[4][1] = 1.4
-        self.array[5][1] = 1.5
-        self.array[6][1] = 1.6
-        self.array[7][1] = 1.7
-        self.array[8][1] = 1.8
-        self.array[9][1] = 1.9
-
+        self.array = [[0 for x in range(self.arrayLength)] for y in range(self.arrayHeight)]        
 
         self.xUnit = (int)(SCREEN_WIDTH/self.arrayLength)
         self.yUnit = (int)(SCREEN_HEIGHT/self.arrayHeight)
@@ -75,6 +63,24 @@ class MyGame(arcade.Window):
         self.array[self.orbX2][self.orbY2] = 2
         self.array[self.orbX2][self.orbY3] = 2
 
+        
+        self.array[0][1] = 1
+        self.array[1][1] = 1.1
+        self.array[2][1] = 1.2
+        self.array[3][1] = 1.3
+        self.array[4][1] = 1.4
+        self.array[5][1] = 1.5
+        self.array[6][1] = 1.6
+        self.array[7][1] = 1.7
+        self.array[8][1] = 1.8
+        self.array[9][1] = 1.9
+        
+        self.array[13][7] = 1
+        self.array[13][8] = 1
+        self.array[13][9] = 1
+        self.array[12][9] = 1
+        self.array[12][7] = 1
+        
     def on_draw(self):
         """ Called whenever we need to draw the window. """
         arcade.start_render()
@@ -82,29 +88,29 @@ class MyGame(arcade.Window):
         #if(self.moving):
         #    self.array = self.updateLife()
     def on_mouse_press(self, x, y, button, modifiers):
-            """
-            Called when the user presses a mouse button.
-            """
-            clickX = (int) (x/self.xUnit)
-            clickY = (int) (y/self.yUnit)
-            if (self.counter < self.income):
-                if (not self.checkOrb(clickX, clickY)):
-                    if (CV == 1 and clickX < self.arrayLength/2):
-                        self.counter+=1
-                        if(not self.moving):
-                            if(self.array[clickX][clickY] == 0):
-                                self.array[clickX][clickY] = CV
-                            else:
-                                self.array[clickX][clickY] = 0
-                    elif (CV == 2 and clickX >= self.ArrayLength/2):
-                        self.counter+=1
-                        if(not self.moving):
-                            if(self.array[clickX][clickY] == 0):
-                                self.array[clickX][clickY] = CV
-                            else:
-                                self.array[clickX][clickY] = 0
+        """
+        Called when the user presses a mouse button.
+        """
+        clickX = (int) (x/self.xUnit)
+        clickY = (int) (y/self.yUnit)
+        if (self.counter < self.income):
+            if (not self.checkOrb(clickX, clickY)):
+                if (CV == 1 and clickX < self.arrayLength/2):
+                    self.counter+=1
+                    if(not self.moving):
+                        if(self.array[clickX][clickY] == 0):
+                            self.array[clickX][clickY] = CV
+                        else:
+                            self.array[clickX][clickY] = 0
+                elif (CV == 2 and clickX >= self.arrayLength/2):
+                    self.counter+=1
+                    if(not self.moving):
+                        if(self.array[clickX][clickY] == 0):
+                            self.array[clickX][clickY] = CV
+                        else:
+                            self.array[clickX][clickY] = 0
 
-    def draw_array(self, arr):
+  def draw_array(self, arr):
         # shape_list = arcade.ShapeElementList()
         for i in range(len(arr)):
             for j in range(len(arr[0])):
@@ -173,16 +179,12 @@ class MyGame(arcade.Window):
             sprite.kill()
         self.sprite_list.empty()
         print(self.sprite_list)
-        #             shape = arcade.create_rectangle_filled((i+.5)*self.xUnit, (j+.5)*self.yUnit, self.xUnit-1, self.yUnit-1, arcade.color.BLUSH)
-        #             shape_list.append(shape)
-        # shape_list.draw()
-
     def checkOrb(self, x, y):
         if (x == self.orbX1 or x == self.orbX2):
             if (y == self.orbY1 or y == self.orbY2 or y == self.orbY3):
                 return True
         return False
-
+      
     def updateLife(self):
         grid = self.array
         y = self.arrayHeight
@@ -214,7 +216,7 @@ class MyGame(arcade.Window):
                     if (summ != 3):
                         newGrid[i][j] = grid[i][j]
                     else:
-                        if (CV == 1):
+                        if (i < (int (self.arrayLength/2))):
                             newGrid[i][j] = grid[i][j] + (((color/summ) + 0.5)/3) + summ * 0.01
                         else:
                             newGrid[i][j] = grid[i][j] + (((color/summ) - 0.5)/3) - summ * 0.01
@@ -271,6 +273,7 @@ class MyGame(arcade.Window):
         else:
             return (6 - summ)
 
+          
     def merge(self):
         arr = synchGame(self)
         if (CV == 1):
@@ -282,6 +285,7 @@ class MyGame(arcade.Window):
                 for j in range(len(arr[0])/2):
                     self.array[i][j] = arr[i][j]
 
+                    
 def main():
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
