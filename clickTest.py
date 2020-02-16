@@ -31,10 +31,13 @@ class MyGame(arcade.Window):
         # So we just see our object, not the pointer.
 
         arcade.set_background_color(arcade.color.ASH_GREY)
+
+        self.sprite_list = arcade.SpriteList()
         self.needs_update = False
         self.arrayLength = 16
         self.arrayHeight = 16
         self.array = [[0 for x in range(self.arrayLength)] for y in range(self.arrayHeight)]        
+
         self.xUnit = (int)(SCREEN_WIDTH/self.arrayLength)
         self.yUnit = (int)(SCREEN_HEIGHT/self.arrayHeight)
         self.moving = False
@@ -107,10 +110,8 @@ class MyGame(arcade.Window):
                         else:
                             self.array[clickX][clickY] = 0
 
-            
-    def draw_array(self, arr):
+  def draw_array(self, arr):
         # shape_list = arcade.ShapeElementList()
-        sprite_list = arcade.SpriteList()
         for i in range(len(arr)):
             for j in range(len(arr[0])):
                 color = arr[i][j]
@@ -118,12 +119,12 @@ class MyGame(arcade.Window):
                     newSprite = arcade.Sprite("doge.jpg", (self.xUnit+0.0)/blep)
                     newSprite.center_x = (i+.5)*self.xUnit
                     newSprite.center_y = (j+.5)*self.yUnit
-                    sprite_list.append(newSprite)
+                    self.sprite_list.append(newSprite)
                     if (self.checkOrb(i, j)):
                         orbSprite = arcade.Sprite("gold.png", (self.xUnit+0.0)/blep)
                         orbSprite.center_x = (i+.5)*self.xUnit
                         orbSprite.center_y = (j+.5)*self.yUnit
-                        sprite_list.append(orbSprite)
+                        self.sprite_list.append(orbSprite)
                 else:
                     if (color < 1.05):
                         newSprite = arcade.Sprite("doge1.jpg", (self.xUnit+0.0)/blep)
@@ -167,24 +168,23 @@ class MyGame(arcade.Window):
                         newSprite = arcade.Sprite("doge20.jpg", (self.xUnit+0.0)/blep)
                     newSprite.center_x = (i+.5)*self.xUnit
                     newSprite.center_y = (j+.5)*self.yUnit
-                    sprite_list.append(newSprite)
+                    self.sprite_list.append(newSprite)
                     if (self.checkOrb(i, j)):
                         orbSprite = arcade.Sprite("gold.png", (self.xUnit+0.0)/blep)
                         orbSprite.center_x = (i+.5)*self.xUnit
                         orbSprite.center_y = (j+.5)*self.yUnit
-                        sprite_list.append(orbSprite)
-                    
-        sprite_list.draw()
-        #             shape = arcade.create_rectangle_filled((i+.5)*self.xUnit, (j+.5)*self.yUnit, self.xUnit-1, self.yUnit-1, arcade.color.BLUSH)
-        #             shape_list.append(shape)
-        # shape_list.draw()
-
+                        self.sprite_list.append(orbSprite)
+        self.sprite_list.draw()
+        for sprite in self.sprite_list:
+            sprite.kill()
+        self.sprite_list.empty()
+        print(self.sprite_list)
     def checkOrb(self, x, y):
         if (x == self.orbX1 or x == self.orbX2):
             if (y == self.orbY1 or y == self.orbY2 or y == self.orbY3):
                 return True
         return False
-        
+      
     def updateLife(self):
         grid = self.array
         y = self.arrayHeight
@@ -272,7 +272,8 @@ class MyGame(arcade.Window):
             return (summ - 3)
         else:
             return (6 - summ)
-            
+
+          
     def merge(self):
         arr = synchGame(self)
         if (CV == 1):
@@ -283,7 +284,8 @@ class MyGame(arcade.Window):
             for i in range(len(arr)):
                 for j in range(len(arr[0])/2):
                     self.array[i][j] = arr[i][j]
-        
+
+                    
 def main():
     MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
